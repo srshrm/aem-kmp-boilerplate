@@ -1,0 +1,92 @@
+package com.adobe.aem_kmp_boilerplate.data
+
+/**
+ * Configuration for an EDS (Edge Delivery Services) site.
+ * Used to construct URLs for fetching page JSON content.
+ *
+ * @param owner The GitHub owner/organization (e.g., "adobe")
+ * @param repo The repository name (e.g., "aem-boilerplate")
+ * @param branch The branch name (default: "main")
+ * @param jsonServiceUrl The JSON conversion service URL (default: "https://mhast-html-to-json.adobeaem.workers.dev")
+ */
+data class EdsConfig(
+    val owner: String,
+    val repo: String,
+    val branch: String = "main",
+    val jsonServiceUrl: String = DEFAULT_JSON_SERVICE_URL
+) {
+    /**
+     * Base URL for the live EDS site.
+     * Pattern: https://{branch}--{repo}--{owner}.aem.live
+     */
+    val siteUrl: String
+        get() = "https://$branch--$repo--$owner.aem.live"
+
+    /**
+     * Host name for the EDS site (used for link handling).
+     */
+    val siteHost: String
+        get() = "$branch--$repo--$owner.aem.live"
+
+    /**
+     * Construct the JSON URL for a specific page path using the new query parameter approach.
+     *
+     * @param path The relative page path (e.g., "products/item1" or "" for home)
+     * @return The full JSON conversion service URL with url and head query parameters
+     */
+    fun getJsonUrl(path: String): String {
+        val pageUrl = getPageUrl(path)
+        return "$jsonServiceUrl?url=$pageUrl&head=false"
+    }
+
+    /**
+     * Construct the live site URL for a specific page path.
+     *
+     * @param path The relative page path
+     * @return The full live site URL
+     */
+    fun getPageUrl(path: String): String {
+        val cleanPath = path.trimStart('/')
+        return if (cleanPath.isEmpty()) siteUrl else "$siteUrl/$cleanPath"
+    }
+
+    /**
+     * Resolve a relative URL to an absolute URL.
+     * Handles URLs starting with "./", "/", or already absolute URLs.
+     *
+     * @param relativeUrl The relative URL (e.g., "./media_xxx.jpg")
+     * @return The absolute URL
+     */
+    fun resolveUrl(relativeUrl: String?): String? {
+        if (relativeUrl == null) return null
+        
+        return when {
+            // Already absolute URL
+            relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://") -> relativeUrl
+            // Relative to current directory
+            relativeUrl.startsWith("./") -> "$siteUrl/${relativeUrl.removePrefix("./")}"
+            // Relative to root
+            relativeUrl.startsWith("/") -> "$siteUrl$relativeUrl"
+            // Assume relative to root
+            else -> "$siteUrl/$relativeUrl"
+        }
+    }
+
+    companion object {
+        /**
+         * Default JSON conversion service URL.
+         * Can be overridden by providing a custom jsonServiceUrl in the constructor.
+         */
+        const val DEFAULT_JSON_SERVICE_URL = "http://localhost:8787/"//"https://mhast-html-to-json.adobeaem.workers.dev"
+    }
+}
+
+/**
+ * Default EDS configuration for the AEM Boilerplate site.
+ */
+val DefaultEdsConfig = EdsConfig(
+    owner = "adobe",
+    repo = "aem-boilerplate",
+    branch = "main"
+)
+
