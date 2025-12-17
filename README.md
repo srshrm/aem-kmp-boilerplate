@@ -1,48 +1,90 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop (JVM).
+# AEM KMP Boilerplate
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A Kotlin Multiplatform (KMP) boilerplate for migrating [AEM Edge Delivery Services (EDS)](https://www.aem.live/) sites to native **Android**, **iOS**, and **Desktop (JVM)** applications. This starter project provides a complete foundation for rendering EDS content natively using Compose Multiplatform.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## What It Does
 
-### Build and Run Android Application
+This boilerplate fetches content from AEM EDS sites via JSON and renders it natively on all platforms. It includes:
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+- **Block Rendering System** - Native UI components for common EDS blocks (Hero, Cards, Columns)
+- **Navigation** - Type-safe routing with deep linking support
+- **Theming** - Material 3 design with customizable colors and typography
+- **Push Notifications** - Cross-platform notifications using Firebase (Android/iOS) and KMPNotifier
+- **Image Loading** - Efficient image handling with Coil
+- **Network Layer** - Ktor-based HTTP client with platform-specific engines
 
-### Build and Run Desktop (JVM) Application
+## Quick Start
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+### Configure Your EDS Site
 
-### Build and Run iOS Application
+Update `composeApp/src/commonMain/kotlin/com/adobe/aem_kmp_boilerplate/data/EdsConfig.kt`:
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+```kotlin
+val DefaultEdsConfig = EdsConfig(
+    siteUrl = "https://your-site.aem.live",
+    homePath = "",  // Optional: custom home page path (e.g., "emea/en/products")
+)
+```
+
+### Run the App
+
+**Android:**
+```bash
+./gradlew :composeApp:assembleDebug
+```
+
+**Desktop (JVM):**
+```bash
+./gradlew :composeApp:run
+```
+
+**iOS:**
+```bash
+open iosApp/iosApp.xcodeproj
+# Run from Xcode
+```
+
+## 📁 Project Structure
+
+- **[composeApp/src/commonMain](./composeApp/src/commonMain/kotlin)** - Shared code for all platforms
+  - `blocks/` - EDS block renderers (Hero, Cards, Columns, etc.)
+  - `data/` - Data models and EDS configuration
+  - `navigation/` - Navigation routes and link handling
+  - `network/` - HTTP client and API service
+  - `screens/` - Screen composables
+  - `theme/` - Material 3 theming
+- **[composeApp/src/androidMain](./composeApp/src/androidMain)** - Android-specific code
+- **[composeApp/src/iosMain](./composeApp/src/iosMain)** - iOS-specific code
+- **[composeApp/src/jvmMain](./composeApp/src/jvmMain)** - Desktop-specific code
+- **[iosApp](./iosApp)** - iOS app wrapper (SwiftUI entry point)
+
+## 🔧 Customization
+
+### Add Custom EDS Blocks
+
+1. Create a new composable in `blocks/YourBlock.kt`
+2. Add it to `blocks/BlockRenderer.kt`
+
+### Update Branding
+
+- **Colors**: Edit `theme/Color.kt`
+- **Typography**: Edit `theme/Typography.kt`
+- **App Name**: Update `AndroidManifest.xml` (Android), `Info.plist` (iOS), and `main.kt` (Desktop)
+
+## 📚 Documentation
+
+For detailed architecture, migration guides, and development instructions, see [CLAUDE.md](./CLAUDE.md).
+
+## 🛠️ Tech Stack
+
+- Kotlin 2.2.21 & Compose Multiplatform 1.10.0
+- Ktor 3.3.3 (Networking)
+- Koin 4.1.1 (Dependency Injection)
+- Coil 3.3.0 (Image Loading)
+- Navigation 3 (Type-safe Navigation)
+- KMPNotifier 1.6.1 (Push Notifications)
+- Firebase (Cloud Messaging & Analytics)
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html) and [AEM Edge Delivery Services](https://www.aem.live/).
