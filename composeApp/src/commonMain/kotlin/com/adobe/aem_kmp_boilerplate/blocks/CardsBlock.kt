@@ -45,7 +45,7 @@ fun CardsBlock(
     ) {
         rows.forEach { row ->
             Box(
-                modifier = Modifier.widthIn(min = 160.dp, max = 280.dp)
+                modifier = Modifier.widthIn(min = 160.dp, max = 320.dp)
             ) {
                 CardItem(
                     row = row,
