@@ -25,6 +25,7 @@ import com.adobe.aem_kmp_boilerplate.data.DefaultEdsConfig
 import com.adobe.aem_kmp_boilerplate.data.EdsConfig
 import com.adobe.aem_kmp_boilerplate.data.EdsPage
 import com.adobe.aem_kmp_boilerplate.data.LocalEdsConfig
+import com.adobe.aem_kmp_boilerplate.data.LocalPageCache
 import com.adobe.aem_kmp_boilerplate.network.EdsApiService
 import com.adobe.aem_kmp_boilerplate.theme.Spacing
 
@@ -44,18 +45,29 @@ fun PageDetailScreen(
     onNavigate: (String) -> Unit = {},
     paddingValues: PaddingValues = PaddingValues()
 ) {
-    var pageData by remember { mutableStateOf<EdsPage?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
+    val pageCache = LocalPageCache.current
+    val cachedPage = pageCache.get(path)
+
+    var pageData by remember { mutableStateOf(cachedPage) }
+    var isLoading by remember { mutableStateOf(cachedPage == null) }
     var error by remember { mutableStateOf<String?>(null) }
 
     val apiService = remember { EdsApiService() }
 
     LaunchedEffect(path, edsConfig) {
+        // Skip fetch if already cached
+        if (pageCache.contains(path)) {
+            pageData = pageCache.get(path)
+            isLoading = false
+            return@LaunchedEffect
+        }
+
         isLoading = true
         error = null
 
         apiService.fetchPage(edsConfig, path)
             .onSuccess { page ->
+                pageCache.put(path, page)
                 pageData = page
                 isLoading = false
             }

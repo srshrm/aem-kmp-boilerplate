@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,6 +37,8 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.adobe.aem_kmp_boilerplate.data.DefaultEdsConfig
 import com.adobe.aem_kmp_boilerplate.data.EdsConfig
+import com.adobe.aem_kmp_boilerplate.data.LocalPageCache
+import com.adobe.aem_kmp_boilerplate.data.rememberPageCache
 import com.adobe.aem_kmp_boilerplate.screens.HomeScreen
 import com.adobe.aem_kmp_boilerplate.screens.PageDetailScreen
 import kotlinx.coroutines.launch
@@ -56,8 +59,10 @@ fun AppNavigation(
     val backStack = remember { mutableStateListOf<Any>(Home) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val pageCache = rememberPageCache()
 
-    ModalNavigationDrawer(
+    CompositionLocalProvider(LocalPageCache provides pageCache) {
+        ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
@@ -87,6 +92,7 @@ fun AppNavigation(
                 }
             }
         )
+        }
     }
 }
 
