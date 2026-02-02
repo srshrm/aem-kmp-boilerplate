@@ -3,7 +3,17 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.googleServices)
+    // Google Services plugin applied conditionally below
+}
+
+// Apply Google Services plugin only if real Firebase configuration exists
+// This allows the boilerplate to build without setting up Firebase first
+val googleServicesFile = file("google-services.json")
+val hasRealFirebaseConfig = googleServicesFile.exists() &&
+        !googleServicesFile.readText().contains("YOUR_PROJECT_ID")
+
+if (hasRealFirebaseConfig) {
+    apply(plugin = libs.plugins.googleServices.get().pluginId)
 }
 
 android {

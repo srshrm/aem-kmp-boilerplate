@@ -1,6 +1,14 @@
 package com.adobe.aem_kmp_boilerplate.data
 
 /**
+ * Default EDS configuration for the AEM Boilerplate site.
+ */
+val DefaultEdsConfig = EdsConfig(
+    siteUrl = "https://main--aem-boilerplate--adobe.aem.live",
+    homePath = ""
+)
+
+/**
  * Configuration for an EDS (Edge Delivery Services) site.
  * Used to construct URLs for fetching page JSON content.
  *
@@ -74,12 +82,4 @@ data class EdsConfig(
         const val DEFAULT_JSON_SERVICE_URL = "https://mhast-html-to-json.aemrnd.workers.dev"
     }
 }
-
-/**
- * Default EDS configuration for the AEM Boilerplate site.
- */
-val DefaultEdsConfig = EdsConfig(
-    siteUrl = "https://main--aem-boilerplate--adobe.aem.live",
-    homePath = ""
-)
 

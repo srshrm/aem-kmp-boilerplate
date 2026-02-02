@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    PLACEHOLDER Firebase Configuration for iOS
+    
+    To enable Firebase (push notifications, analytics):
+    1. Create a Firebase project at https://console.firebase.google.com
+    2. Add an iOS app with your PRODUCT_BUNDLE_IDENTIFIER from iosApp/Configuration/Config.xcconfig
+    3. Download the real GoogleService-Info.plist and replace this file
+    
+    Note: The app will build and run without Firebase, but push notifications won't work until configured.
+-->
 <plist version="1.0">
     <dict>
         <key>API_KEY</key>

@@ -1,8 +1,8 @@
 # AEM KMP Boilerplate
 
-A Kotlin Multiplatform (KMP) boilerplate for
-migrating [AEM Edge Delivery Services (EDS)](https://www.aem.live/) sites to native **Android**, **iOS**, and **Desktop (JVM)** applications. This starter project provides a complete foundation for
-rendering EDS content natively using Compose Multiplatform.
+A Kotlin Multiplatform (KMP) boilerplate for migrating [AEM Edge Delivery Services (EDS)](https://www.aem.live/) sites
+to native **Android**, **iOS**, and **Desktop (JVM)** applications. This starter project provides a complete foundation
+for rendering EDS content natively using Compose Multiplatform.
 
 ## What It Does
 
@@ -16,10 +16,14 @@ platforms. It includes:
 - **Image Loading** - Efficient image handling with Coil
 - **Network Layer** - Ktor-based HTTP client with platform-specific engines
 - **DataStore** - Cross-platform preferences storage
+- **Library Export Ready** - Can be used as a KMP library in existing Android, iOS, and Desktop apps
 
 ## Quick Start
 
-### Configure Your EDS Site
+> **Note:** This boilerplate builds successfully without any configuration changes. Follow these steps to customize it
+> for your app.
+
+### 1. Configure Your EDS Site
 
 Update `composeApp/src/commonMain/kotlin/com/adobe/aem_kmp_boilerplate/data/EdsConfig.kt`:
 
@@ -30,7 +34,81 @@ val DefaultEdsConfig = EdsConfig(
 )
 ```
 
-### Run the App
+### 2. Update App Identifiers (Required for Publishing)
+
+**Android** (`androidApp/build.gradle.kts`):
+
+```kotlin
+android {
+  defaultConfig {
+    applicationId = "com.yourcompany.yourapp"  // Must be unique on Play Store
+  }
+}
+```
+
+**iOS** (`iosApp/Configuration/Config.xcconfig`):
+
+```
+TEAM_ID=YOUR_APPLE_TEAM_ID
+PRODUCT_NAME=YourAppName
+PRODUCT_BUNDLE_IDENTIFIER=com.yourcompany.yourapp  # Must be unique on App Store
+```
+
+**Desktop** (`desktopApp/build.gradle.kts`):
+
+```kotlin
+nativeDistributions {
+  packageName = "YourAppName"
+}
+```
+
+**Note:** Leave `namespace` and package structure unchanged. Only the application identifiers above need to be
+customized.
+
+### 3. Update App Icons/Logo (Recommended)
+
+**Android:**
+
+- Replace launcher icons in `androidApp/src/main/res/mipmap-*` folders
+- Use [Icon Kitchen](https://icon.kitchen/) to generate all icon sizes
+- Or use Android Studio: Right-click `res` → New → Image Asset
+
+**iOS:**
+
+- Replace icons in `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/`
+- Use Xcode: Open `Assets.xcassets` → Select `AppIcon` → Drag and drop your icon
+- Or use [Icon Kitchen](https://icon.kitchen/) to generate all iOS icon sizes
+
+**Desktop:**
+
+- Replace icon at `desktopApp/src/main/resources/common/ic_notification.png`
+- Update the icon reference in `desktopApp/build.gradle.kts` under `nativeDistributions`
+
+### 4. Firebase Setup (Optional - for Push Notifications)
+
+The app builds and runs without Firebase configuration. To enable push notifications:
+
+**Android:**
+
+1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
+2. Add an Android app with your `applicationId`
+3. Download `google-services.json` and replace `androidApp/google-services.json`
+
+**iOS:**
+
+1. Add an iOS app to the same Firebase project with your `PRODUCT_BUNDLE_IDENTIFIER`
+2. Download `GoogleService-Info.plist` and replace `iosApp/iosApp/GoogleService-Info.plist`
+
+**Note:** The app includes placeholder Firebase files and will skip Firebase initialization if not configured. Push
+notifications won't work until you add real Firebase configuration files.
+
+**For detailed guides:**
+
+- 📋 [Complete Customization Checklist](./BOILERPLATE_CUSTOMIZATION.md)
+- 🔥 [Firebase Setup Guide](./FIREBASE_SETUP.md)
+- 📦 [Using as a KMP Library](./LIBRARY_EXPORT.md) - Integrate into existing apps
+
+### 5. Run the App
 
 **Android:**
 
@@ -88,6 +166,36 @@ androidApp  desktopApp   iosApp
 - **[desktopApp](./desktopApp)** - Desktop application entry point
 - **[iosApp](./iosApp)** - iOS app wrapper (SwiftUI entry point)
 
+## Usage Modes
+
+This boilerplate can be used in two ways:
+
+### 1. Standalone Apps (Default)
+
+Build complete Android, iOS, and Desktop applications
+
+### 2. KMP Library
+
+Integrate the `composeApp` module into existing apps as a library. The module is already configured with
+`com.android.kotlin.multiplatform.library` plugin and ready for export.
+
+See [**LIBRARY_EXPORT.md**](./LIBRARY_EXPORT.md) for:
+
+- Publishing to Maven Local/Central or GitHub Packages
+- Integration examples for existing Android, iOS, and Desktop apps
+- API configuration and dependency management
+- ProGuard rules and troubleshooting
+
+**Quick example:**
+
+```bash
+# Publish to Maven Local
+./gradlew :composeApp:publishToMavenLocal
+
+# Use in existing Android app
+implementation("com.adobe.aem_kmp_boilerplate:composeApp:1.0.0")
+```
+
 ## Customization
 
 ### Add Custom EDS Blocks
@@ -101,7 +209,8 @@ androidApp  desktopApp   iosApp
 - **Typography**: Edit `composeApp/.../theme/Typography.kt`
 - **App Name**: 
   - Android: `androidApp/src/main/res/values/strings.xml`
-  - iOS: `iosApp/iosApp/Info.plist`
+  - iOS: `iosApp/iosApp/Info.plist` (edit for visible name), plus `iosApp/Configuration/Config.xcconfig` (
+    `PRODUCT_NAME`)
   - Desktop: `desktopApp/src/main/kotlin/main.kt`
 
 ## Documentation
@@ -146,5 +255,5 @@ see [CLAUDE.md](./CLAUDE.md).
 ---
 
 Learn more
-about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
+about [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform/get-started.html)
 and [AEM Edge Delivery Services](https://www.aem.live/).
