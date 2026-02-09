@@ -73,11 +73,11 @@ private val DarkColorScheme = darkColorScheme(
  * @param content The composable content to wrap with the theme.
  */
 @Composable
-fun AemAppTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = /* if (darkTheme) DarkColorScheme else */ LightColorScheme
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     // Use composable typography function to support custom fonts
     val typography = appTypography()

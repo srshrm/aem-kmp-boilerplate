@@ -4,7 +4,7 @@ package com.aem.data
  * Default EDS configuration for the AEM Boilerplate site.
  */
 val DefaultEdsConfig = EdsConfig(
-    siteUrl = "https://www.aem.live/",//"https://main--aem-boilerplate--adobe.aem.live",
+    siteUrl = "https://main--aem-boilerplate--adobe.aem.live",
     homePath = ""
 )
 

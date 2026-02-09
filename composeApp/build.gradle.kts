@@ -42,6 +42,10 @@ kotlin {
 
             // Koin - Android
             implementation(libs.koin.android)
+
+            // Media3 ExoPlayer (Video)
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.ui)
         }
 
         commonMain.dependencies {

@@ -38,9 +38,10 @@ import androidx.navigation3.ui.NavDisplay
 import com.aem.data.DefaultEdsConfig
 import com.aem.data.EdsConfig
 import com.aem.data.LocalPageCache
+import com.aem.data.PageCache
 import com.aem.data.rememberPageCache
-import com.aem.screens.HomeScreen
-import com.aem.screens.PageDetailScreen
+import com.aem.network.EdsApiService
+import com.aem.screens.EdsPageScreen
 import kotlinx.coroutines.launch
 
 /**
@@ -163,55 +164,48 @@ private fun AppNavigationContent(
             )
         }
     ) { paddingValues ->
+        val apiService = remember { EdsApiService() }
+        val onNavigate: (String) -> Unit = { url ->
+            handleLinkClick(
+                url = url,
+                edsConfig = edsConfig,
+                backStack = backStack,
+                onExternalLink = onExternalLink
+            )
+        }
+
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
             entryProvider = { route ->
                 when (route) {
                     is Home -> NavEntry(route) {
-                        HomeScreen(
+                        EdsPageScreen(
+                            cacheKey = PageCache.HOME_KEY,
                             edsConfig = edsConfig,
-                            onNavigate = { url ->
-                                handleLinkClick(
-                                    url = url,
-                                    edsConfig = edsConfig,
-                                    backStack = backStack,
-                                    onExternalLink = onExternalLink
-                                )
-                            },
-                            paddingValues = paddingValues
+                            onNavigate = onNavigate,
+                            paddingValues = paddingValues,
+                            fetchPage = { apiService.fetchHomePage(edsConfig) }
                         )
                     }
 
                     is PageDetail -> NavEntry(route) {
-                        PageDetailScreen(
-                            path = route.path,
+                        EdsPageScreen(
+                            cacheKey = route.path,
                             edsConfig = edsConfig,
-                            onNavigate = { url ->
-                                handleLinkClick(
-                                    url = url,
-                                    edsConfig = edsConfig,
-                                    backStack = backStack,
-                                    onExternalLink = onExternalLink
-                                )
-                            },
-                            paddingValues = paddingValues
+                            onNavigate = onNavigate,
+                            paddingValues = paddingValues,
+                            fetchPage = { apiService.fetchPage(edsConfig, route.path) }
                         )
                     }
 
                     else -> NavEntry(Unit) {
-                        // Fallback - navigate to home
-                        HomeScreen(
+                        EdsPageScreen(
+                            cacheKey = PageCache.HOME_KEY,
                             edsConfig = edsConfig,
-                            onNavigate = { url ->
-                                handleLinkClick(
-                                    url = url,
-                                    edsConfig = edsConfig,
-                                    backStack = backStack,
-                                    onExternalLink = onExternalLink
-                                )
-                            },
-                            paddingValues = paddingValues
+                            onNavigate = onNavigate,
+                            paddingValues = paddingValues,
+                            fetchPage = { apiService.fetchHomePage(edsConfig) }
                         )
                     }
                 }

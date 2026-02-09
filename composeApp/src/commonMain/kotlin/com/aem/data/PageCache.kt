@@ -17,6 +17,10 @@ class PageCache {
         cache[key] = page
     }
 
+    fun remove(key: String) {
+        cache.remove(key)
+    }
+
     fun contains(key: String): Boolean = cache.containsKey(key)
 
     fun clear() {

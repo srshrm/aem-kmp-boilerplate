@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.aem.data.DefaultEdsConfig
 import com.aem.data.EdsConfig
 import com.aem.navigation.AppNavigation
-import com.aem.theme.AemAppTheme
+import com.aem.theme.AppTheme
 import com.aem.utils.openUrl
 
 /**
@@ -19,7 +19,7 @@ import com.aem.utils.openUrl
 fun App(
     edsConfig: EdsConfig = DefaultEdsConfig
 ) {
-    AemAppTheme {
+    AppTheme {
         AppNavigation(
             edsConfig = edsConfig,
             onExternalLink = { url ->
